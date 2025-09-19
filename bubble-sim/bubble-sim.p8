@@ -1,0 +1,79 @@
+pico-8 cartridge // http://www.pico-8.com
+version 43
+__lua__
+--ball collision simulation
+--nkiv
+function _init()
+	balls={}
+	max_life=150
+	g=-1.2
+	num=50
+	for i=1,num do
+		make_ball()
+	end
+end
+
+function _update()
+	foreach(balls,update_b)
+end
+
+function _draw()
+	cls(1)
+	print("welcome to my bubble sim")
+	foreach(balls,draw_b)
+	if(#balls<1)then
+		for i=1,num do
+			make_ball()
+		end
+	end
+end
+
+function update_b(b)
+	if(b.life>=max_life)then
+		del(balls,b) --delete b from balls
+	else
+		--add life
+		b.life+=1
+		--move balls	
+		b.ydir+=g --add gravity
+  b.x+=rnd(1)-.5
+  b.y+=b.ydir
+	--colision
+		--walls
+		if(b.x>127 or b.x<0)then
+			b.xdir=-b.xdir
+		end
+		if(b.y>127 or b.y<50)then
+			b.ydir*=-.65
+		end
+		if(b.y<10)then
+			del(balls,b)
+		end
+	end
+end
+
+function draw_b(b)
+ circfill(b.x,b.y,b.r,12)
+	circ(b.x,b.y,b.r,7)
+	fillp(░)
+	circfill(b.x,b.y,b.r,7)
+	fillp()
+end
+
+function make_ball()
+ b={}
+	b.x=rnd(128)
+	b.y=rnd(78)+50
+	b.r=2
+	b.xdir=rnd(3)-3
+	b.ydir=rnd(3)-3
+	b.life=rnd(90)
+	add(balls,b)
+end
+__gfx__
+00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00700700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00077000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00077000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00700700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
